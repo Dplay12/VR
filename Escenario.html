@@ -1,0 +1,290 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>Decoraciones navideñas</title>
+</head>
+<style>
+          body {
+              margin: 0;
+              overflow: hidden;
+          }
+          #boton {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            font-size: 40px;
+            cursor: pointer;
+          }
+          #activ {
+            color: rgba(9, 245, 9, 0.87);
+          }
+     </style>
+
+<body>
+  <!--Boton para activar el pointerlock-->
+  <div id="boton">
+    Para comenzar da clic en + para activar <p id="activ">(       )</p>Mira al rededor usando el mouse, pulsa Esc para regresar.
+  </div>
+
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap">
+    {
+      "imports": {
+        "three": "./js/three.module.js",
+        "three/PointerLockControls": "./js/PointerLockControls.js",
+        "three/interactive": "./js/three.interactive.js"
+      }
+    }
+  </script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three';
+    import { InteractionManager } from 'three/interactive';//añade libreria itneractiva
+    import { TWEEN } from './js/tween.module.min.js'; // Libreria movimiento suave
+    import { PointerLockControls } from 'three/PointerLockControls'; //control de camara**<u>NOTA MUY IMPORTANTE.</u>** Al utilizar el control PointerLockControls se debe *comentar* todo lo relacionado al *OrbitControl*, no se pueden usar los dos.
+    import Obj01 from './Objeto/Hombre de galleta.js';
+    import Obj02 from './Objeto/Regalo.js';
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x70707C);
+
+
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(50,window.innerWidth / window.innerHeight,.1,1000);
+
+    //Settings de la cámara
+    camera.position.set(0, 0, 0);
+    var controls = new PointerLockControls (camera, renderer.domElement);
+    document.getElementById('activ').onclick = function() {
+        controls.lock();
+    }
+    controls.addEventListener('lock', function() {
+        boton.style.display = 'none';
+    });
+    controls.addEventListener('unlock', function() {
+        boton.style.display = '';
+    });
+
+    var interaccionManager = new InteractionManager(
+        renderer,
+        camera,
+        renderer.domElement
+    );
+    var scene = new THREE.Scene();
+
+    // Luz
+    var light = new THREE.PointLight(0xffffff, 1, 200);
+    light.position.set(0, 90, 10);
+    scene.add(light);
+    
+    // Espacio para colocar los objetos
+ 
+    // Piso
+    var pisoGeometry = new THREE.PlaneGeometry(200, 200);
+    var pisoMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var piso = new THREE.Mesh(pisoGeometry, pisoMaterial);
+    piso.rotation.x = -Math.PI / 2;
+    piso.position.y = -1;
+    scene.add(piso);
+
+    // Esfera navideña
+    var esferaGroup = new THREE.Group();
+
+        // Esfera principal (bola)
+    var esferaGeometry = new THREE.SphereGeometry(0.6, 32, 32);
+    var esferaMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 }); // roja
+    var esfera = new THREE.Mesh(esferaGeometry, esferaMaterial);
+    esferaGroup.add(esfera);
+
+        // Sujetador dorado
+    var tapaGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.2, 32);
+    var tapaMaterial = new THREE.MeshLambertMaterial({ color: 0xffd700 }); // dorado
+    var tapa = new THREE.Mesh(tapaGeometry, tapaMaterial);
+    tapa.position.y = 0.7;
+    esferaGroup.add(tapa);
+
+    esferaGroup.position.set(-40, 3, 0);
+    esferaGroup.scale.set(5,5,5);
+    scene.add(esferaGroup);
+
+
+    // Grupo para el bastón
+    var bastonGroup = new THREE.Group();
+
+        // Parte recta del bastón
+    var cuerpoGeometry = new THREE.CylinderGeometry(0.15, 0.15, 2, 32);
+    var cuerpoMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var cuerpo = new THREE.Mesh(cuerpoGeometry, cuerpoMaterial);
+    cuerpo.position.y = -0.2;
+    bastonGroup.add(cuerpo);
+
+        // Parte curva (el gancho)
+    var curvaGeometry = new THREE.TorusGeometry(0.35, 0.15, 16, 100, Math.PI);
+    var curvaMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+    var curva = new THREE.Mesh(curvaGeometry, curvaMaterial);
+
+
+    // Escala para alargar la "boca" del torus
+    curva.scale.y = 1.4; 
+
+
+    // Crear grupo para la curva
+    var curvaGroup = new THREE.Group();
+    curvaGroup.add(curva);
+
+    // Mover el grupo 
+    curvaGroup.position.set(0.35, 0.8, 0); 
+    bastonGroup.add(curvaGroup);
+    // Añadir grupo a la escena
+    scene.add(bastonGroup);
+    bastonGroup.position.set(40, 10, 8);
+    bastonGroup.scale.set(5,5,5);
+
+
+    //Objeto impoortado 1
+
+    var hom = new Obj01({x:0, y:0, z:0});
+    scene.add(hom); 
+    hom.scale.set(.5,.5,.5);
+    hom.position.set(40,15,40);
+
+    //Objeto impoortado 2
+
+    var reg1 = new Obj02 ({x:0, y:0, z:0});
+    scene.add(reg1); 
+    reg1.scale.set(1,1,1);
+    reg1.position.set(-40,2,40);
+
+    // Interacciones
+
+        //Interacion esfera
+        esferaGroup.addEventListener('mouseover', (event) =>{
+            document.body.style.cursor = 'pointer';
+            event.target.scale.set(6,6,6);
+        });
+        esferaGroup.addEventListener('mouseout', (event) =>{
+            document.body.style.cursor = 'default';
+            event.target.scale.set(5,5,5);
+        });
+        esferaGroup.addEventListener('click', (event) =>{
+            var coords = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
+            event.target.scale.set(5,5,5);
+            new TWEEN.Tween(coords)
+            .to ({x: -40, y: 3, z: 15})
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z))
+            .onComplete(() => camera.lookAt(reg1.position)) 
+            .start();
+        });
+        interaccionManager.add(esferaGroup);
+
+        // Interaccion Baston
+        bastonGroup.addEventListener('mouseover', (event) =>{
+            document.body.style.cursor = 'pointer';
+            event.target.scale.set(6,6,6);
+        });
+        bastonGroup.addEventListener('mouseout', (event) =>{
+            document.body.style.cursor = 'default';
+            event.target.scale.set(5,5,5);
+        });
+        bastonGroup.addEventListener('click', (event) =>{
+            var coords = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
+            event.target.scale.set(5,5,5);
+            new TWEEN.Tween(coords)
+            .to ({x: 40, y: 10, z: 22})
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z))
+            .onComplete(() => camera.lookAt(esferaGroup.position)) 
+            .start();
+        });
+        interaccionManager.add(bastonGroup);
+
+        //Interaccion Hombre de galleta
+        hom.addEventListener('mouseover', (event) =>{
+            document.body.style.cursor = 'pointer';
+            event.target.scale.set(2,2,2);
+        }); 
+        hom.addEventListener('mouseout', (event) =>{
+            document.body.style.cursor = 'default';
+            event.target.scale.set(1,1,1);
+        });
+        hom.addEventListener('click', (event) =>{
+            var coords = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
+            event.target.scale.set(1,1,1);
+            new TWEEN.Tween(coords)
+            .to ({x: 40, y: 10, z: 62})
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z))
+            .onComplete(() => camera.lookAt(bastonGroup.position)) 
+            .start();
+        });
+        interaccionManager.add(hom);
+
+        //Interaccion Regalo
+        reg1.addEventListener('mouseover', (event) =>{
+            document.body.style.cursor = 'pointer';
+            event.target.scale.set(2,2,2);
+        });
+        reg1.addEventListener('mouseout', (event) =>{
+            document.body.style.cursor = 'default';
+            event.target.scale.set(1,1,1);
+        });
+        reg1.addEventListener('click', (event) =>{
+            var coords = {x: camera.position.x, y: camera.position.y, z: camera.position.z};
+            event.target.scale.set(1,1,1);
+            new TWEEN.Tween(coords)
+            .to ({x: -40, y: 5, z: 65})
+            .onUpdate(() => camera.position.set(coords.x, coords.y, coords.z))
+            .onComplete(() => camera.lookAt(hom.position)) 
+            .start();
+        }); 
+        interaccionManager.add(reg1);
+
+        //Guia
+        var g1= new THREE.BoxGeometry(.00045,.005,.0075);
+        var m1= new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.DoubleSide});
+        var meshx = new THREE.Mesh (g1,m1);
+        meshx.position.set(0,0,-.1);
+
+        var g2= new THREE.BoxGeometry(.005,.00045,.0075);
+        var m2= new THREE.MeshBasicMaterial({color: 0x000000, side: THREE.DoubleSide});
+        var meshy = new THREE.Mesh (g2,m2);
+        meshy.position.set(0,0,-.1);
+        scene.add(camera);
+        camera.add(meshx, meshy);
+
+    //Pareja de trabajo
+    //Arteaga Ramiez Cristal
+    //Orozco Jaimes Donovan Nicolas
+
+    //🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() { 
+
+        TWEEN.update()
+
+        interaccionManager.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

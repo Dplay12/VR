@@ -1,0 +1,961 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>Escenario Navideño</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script src="./font/1.js"></script>
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+    import {TextGeometry} from "./js/TextGeometry.js";
+    import {FontLoader} from "./js/FontLoader.js";
+
+    import Obj1 from './Objeto/Arbol navideño.js';
+    import Obj2 from './Objeto/Arbol.js';
+    import Obj3 from './Objeto/Cartel.js';
+    import Obj4 from './Objeto/Casa.js';
+    import Obj5 from './Objeto/Estrella.js';
+    import Obj6 from './Objeto/Hombre de galleta.js';
+    import Obj7 from './Objeto/Hombre de nieve.js';
+    import Obj8 from './Objeto/Paleta.js';
+    import Obj9 from './Objeto/Regalo.js';
+    import Obj10 from './Objeto/Silla.js';
+    import Obj11 from './Objeto/Poste de luz.js';
+    import Obj12 from './Objeto/CoronaNavideno.js';
+    import Obj13 from './Objeto/Copo de nieve.js';
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x70707C);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+
+    //Settings de la cámara
+    camera.position.set(80, 10, 400);
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    //lamparas
+    var sl01 = new THREE.SpotLight (0xD6C52D,.5,0,.5,0.5,0.5);
+    scene.add(sl01);
+    sl01.target.position.set(205,0,180);
+    scene.add(sl01.target);
+    sl01.position.set(205,70,180);
+
+    var sl02 = new THREE.SpotLight (0xD6C52D,.5,0,.5,0.5,0.5);
+    scene.add(sl02);
+    sl02.target.position.set(205,0,90);
+    scene.add(sl02.target);
+    sl02.position.set(205,70,90);
+
+    var sl03 = new THREE.SpotLight (0xD6C52D,.5,0,.5,0.5,0.5);
+    scene.add(sl03);
+    sl03.target.position.set(-205,0,180);
+    scene.add(sl03.target);
+    sl03.position.set(-205,70,180);
+
+    var sl04 = new THREE.SpotLight (0xD6C52D,.5,0,.5,0.5,0.5);
+    scene.add(sl04);
+    sl04.target.position.set(-205,0,90);
+    scene.add(sl04.target);
+    sl04.position.set(-205,70,90);
+
+    var sl05 = new THREE.SpotLight (0xD6C52D,.5,0,.5,0.5,0.5);
+    scene.add(sl05);
+    sl05.target.position.set(-205,0,250);
+    scene.add(sl05.target);
+    sl05.position.set(-205,70,250);
+
+    var sl06 = new THREE.SpotLight (0xD6C52D,.5,0,.5,0.5,0.5);
+    scene.add(sl06);
+    sl06.target.position.set(205,0,250);
+    scene.add(sl06.target);
+    sl06.position.set(205,70,250);
+
+    var sl07 = new THREE.SpotLight (0xD6C52D,1,0,2,0.5,0.5);
+    scene.add(sl07);
+    sl07.target.position.set(0,0,-300);
+    scene.add(sl07.target);
+    sl07.position.set(0,170,-300);
+
+    //sombras
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFShadowMap;
+
+    var light = new THREE.DirectionalLight(0x85A3FF, 1.2);
+    light.position.set(-200,200,100);
+    light.target.position.set(0,0,0);
+    var heplper1 = new THREE.DirectionalLightHelper(light);
+    //scene.add(heplper1);
+    light.castShadow = true;
+    light.shadow.bias = 0.001;
+    light.shadow.mapSize.width = 1024;
+    light.shadow.mapSize.height = 1024;
+
+    light.shadow.camera.top = 520;
+    light.shadow.camera.bottom = -520;
+    light.shadow.camera.left = -600;
+    light.shadow.camera.right = 600; 
+    light.shadow.camera.visible = true;
+
+    var directionalHelper = new THREE.CameraHelper(light.shadow.camera);
+    //scene.add(directionalHelper);
+
+    scene.add(light);
+    // Imagenes
+    var loader =new THREE.TextureLoader();
+    var bgtexture = loader.load('./Media/bg.png');
+    scene.background = bgtexture;
+
+// Espacio para colocar los objetos
+    
+    // Creando un plano
+    var planeGeometry = new THREE.PlaneGeometry(800, 800);
+    var planeMaterial = new THREE.MeshStandardMaterial({
+        color: 0xFFFFFF, side: THREE.DoubleSide
+    });
+    var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.set(1.57,0,0);
+    plane.position.set(0,0,0);
+    scene.add(plane);
+    plane.receiveShadow = true;
+
+    //Fuentes Tipograficas
+    var font = loader.parse(fontJSON);
+
+    // Objetos
+
+    var g1= new THREE.PlaneGeometry(420,30,250,200);
+    var m1 = new THREE.MeshLambertMaterial({ color: 0x94571B,side:  THREE.DoubleSide});
+    var base1 = new THREE.Mesh(g1,m1);
+    base1.position.set(0,.5,50);
+    base1.rotation.set(1.57,0,0)
+    scene.add(base1);
+    base1.receiveShadow = true;
+
+    var base2 = new THREE.Mesh(g1,m1);
+    base2.position.set(0,.5,140);
+    base2.rotation.set(1.57,0,0)
+    scene.add(base2);
+    base2.receiveShadow = true;
+
+    var base3 = new THREE.Mesh(g1,m1);
+    base3.position.set(0,.5,220);
+    base3.rotation.set(1.57,0,0)
+    scene.add(base3);
+    base3.receiveShadow = true;
+
+    var g2= new THREE.PlaneGeometry(80,680,250,400);
+    var m2 = new THREE.MeshLambertMaterial({ color: 0x94571B,side:  THREE.DoubleSide});
+    var base4 = new THREE.Mesh(g2,m2);
+    base4.position.set(0,.5,65);
+    base4.rotation.set(1.57,0,0)
+    scene.add(base4);
+    base4.receiveShadow = true;
+
+    // Grupo para el bastón
+    var bastonGroup = new THREE.Group();
+
+    // Parte recta del bastón
+    var cuerpoGeometry = new THREE.CylinderGeometry(0.15, 0.15, 2, 32);
+    var cuerpoMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var cuerpo = new THREE.Mesh(cuerpoGeometry, cuerpoMaterial);
+    cuerpo.position.y = -0.2;
+    bastonGroup.add(cuerpo);
+    bastonGroup.castShadow = true;
+
+    // Parte curva (el gancho)
+    var curvaGeometry = new THREE.TorusGeometry(0.35, 0.15, 16, 100, Math.PI);
+    var curvaMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+    var curva = new THREE.Mesh(curvaGeometry, curvaMaterial);
+
+    // Escala para alargar la "boca" del torus
+    curva.scale.y = 1.4; 
+
+    // Crear grupo para la curva
+    var curvaGroup = new THREE.Group();
+    curvaGroup.add(curva);
+    curvaGroup.castShadow = true;
+
+    // Mover el grupo 
+    curvaGroup.position.set(0.35, 0.8, 0); 
+    bastonGroup.add(curvaGroup);
+    // Añadir grupo a la escena
+    //scene.add(bastonGroup);
+    bastonGroup.position.set(40, 10, 8);
+    bastonGroup.scale.set(25,25,25);
+    bastonGroup.castShadow = true;
+
+    var cbaston1 = bastonGroup.clone();
+    cbaston1.position.set(-60,30,100);
+    scene.add(cbaston1);
+    cbaston1.castShadow = true;
+
+    var cbaston2 = bastonGroup.clone();
+    cbaston2.position.set(-60,30,180);
+    scene.add(cbaston2);
+    cbaston2.castShadow = true;
+
+    var cbaston3 = bastonGroup.clone();
+    cbaston3.position.set(-60,30,260);
+    scene.add(cbaston3);
+    cbaston3.castShadow = true;
+
+    var cbaston4 = bastonGroup.clone();
+    cbaston4.position.set(-60,30,0);
+    scene.add(cbaston4);
+    cbaston4.castShadow = true;
+
+    var cbaston5 = bastonGroup.clone();
+    cbaston5.position.set(60,30,100);
+    cbaston5.rotation.set(0,3.14,0);
+    scene.add(cbaston5);
+    cbaston5.castShadow = true;
+
+    var cbaston6 = bastonGroup.clone();
+    cbaston6.position.set(60,30,180);
+    cbaston6.rotation.set(0,3.14,0);
+    scene.add(cbaston6);
+    cbaston6.castShadow = true;
+
+    var cbaston7 = bastonGroup.clone();
+    cbaston7.position.set(60,30,260);
+    cbaston7.rotation.set(0,3.14,0);
+    scene.add(cbaston7);
+    cbaston7.castShadow = true;
+
+    var cbaston8 = bastonGroup.clone();
+    cbaston8.position.set(60,30,0);
+    cbaston8.rotation.set(0,3.14,0);
+    scene.add(cbaston8);
+    cbaston8.castShadow = true;
+
+    //Mesa de Trineo y silla
+    var g3 = new THREE.BoxGeometry(190,25,90);
+    var m3 = new THREE.MeshLambertMaterial({ color: 0xFFFFFF});
+    var mesa = new THREE.Mesh(g3,m3);
+    mesa.position.set(170,15,-170);
+    scene.add(mesa);
+    mesa.receiveShadow= true;
+
+    var g4 = new THREE.PlaneGeometry(190,90,250,200);
+    var m4 = new THREE.MeshLambertMaterial({ color: 0xB81F00,side:  THREE.DoubleSide});
+    var base5 = new THREE.Mesh(g4,m4);
+    base5.position.set(170,28,-170);
+    base5.rotation.set(1.57,0,0);
+    scene.add(base5);
+    base5.receiveShadow = true;
+
+    var g5 = new THREE.PlaneGeometry(190,10,250,200);
+    var m5 = new THREE.MeshLambertMaterial({ color: 0xB81F00,side:  THREE.DoubleSide});
+    var base6 = new THREE.Mesh(g5,m5);
+    base6.position.set(170,24,-124.5);
+    scene.add(base6);
+    base6.receiveShadow = true;
+
+    var g6 = new THREE.PlaneGeometry(190,10,250,200);
+    var m6 = new THREE.MeshLambertMaterial({ color: 0xB81F00,side:  THREE.DoubleSide});
+    var base7 = new THREE.Mesh(g6,m6);
+    base7.position.set(170,24,-215.5);
+    scene.add(base7);
+    base7.receiveShadow = true;
+
+
+    // Objetos importados
+
+    //Cartel
+    var cartel = Obj3({x: 0, y: 0, z: 0});
+    cartel.scale.set(.5, .5, .5);
+    cartel.position.set(80, 3, 380);
+    scene.add(cartel);
+    cartel.castShadow = true;
+
+    //Casas
+    var casa1 = Obj4({x: 0, y: 0, z: 0});
+    casa1.scale.set(2,2,2);
+    casa1.position.set(220,6,140);
+    casa1.rotation.set(0,-1.57,0)
+    scene.add(casa1);
+
+    var casa2 = Obj4({x: 0, y: 0, z: 0});
+    casa2.scale.set(2,2,2);
+    casa2.position.set(220,6,50);
+    casa2.rotation.set(0,-1.57,0)
+    scene.add(casa2);
+
+    var casa3 = Obj4({x: 0, y: 0, z: 0});
+    casa3.scale.set(2,2,2);
+    casa3.position.set(-220,6,140);
+    casa3.rotation.set(0,1.57,0)
+    scene.add(casa3);
+
+    var casa4 = Obj4({x: 0, y: 0, z: 0});
+    casa4.scale.set(2,2,2);
+    casa4.position.set(-220,6,50);
+    casa4.rotation.set(0,1.57,0)
+    scene.add(casa4);
+
+    var casa5 = Obj4({x: 0, y: 0, z: 0});
+    casa5.scale.set(2,2,2);
+    casa5.position.set(220,6,220);
+    casa5.rotation.set(0,-1.57,0)
+    scene.add(casa5);
+
+    var casa6 = Obj4({x: 0, y: 0, z: 0});
+    casa6.scale.set(2,2,2);
+    casa6.position.set(-220,6,220);
+    casa6.rotation.set(0,1.57,0)
+    scene.add(casa6);
+
+    //Coronas
+    var corona1 = Obj12 ({x: 0, y: 0, z: 0});
+    corona1.scale.set(2,2,2);
+    corona1.position.set(197,35,140);
+    corona1.rotation.set(1.57,0,1.57);
+    scene.add(corona1);
+
+    var corona2 = Obj12 ({x: 0, y: 0, z: 0});
+    corona2.scale.set(2,2,2);
+    corona2.position.set(197,35,50);
+    corona2.rotation.set(1.57,0,1.57);
+    scene.add(corona2);
+
+    var corona3 = Obj12 ({x: 0, y: 0, z: 0});
+    corona3.scale.set(2,2,2);
+    corona3.position.set(-197,35,140);
+    corona3.rotation.set(1.57,0,1.57);
+    scene.add(corona3);
+
+    var corona4 = Obj12 ({x: 0, y: 0, z: 0});
+    corona4.scale.set(2,2,2);
+    corona4.position.set(197,35,220);
+    corona4.rotation.set(1.57,0,1.57);
+    scene.add(corona4);
+
+    var corona5 = Obj12 ({x: 0, y: 0, z: 0});
+    corona5.scale.set(2,2,2);
+    corona5.position.set(-197,35,50);
+    corona5.rotation.set(1.57,0,1.57);
+    scene.add(corona5);
+
+    var corona6 = Obj12 ({x: 0, y: 0, z: 0});
+    corona6.scale.set(2,2,2);
+    corona6.position.set(-197,35,220);
+    corona6.rotation.set(1.57,0,1.57);
+    scene.add(corona6);
+
+    //Arbol navideño
+    var arbol_nav = Obj1 ({x: 0, y: 0, z: 0});
+    arbol_nav.scale.set(2,2,2);
+    arbol_nav.position.set(0,0,-300);
+    scene.add(arbol_nav);
+    
+    //Arboles
+    var arbol1 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol1.scale.set(1,1,1);
+    arbol1.position.set(300,0,170);
+    scene.add(arbol1);
+
+    var arbol2 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol2.scale.set(1,1,1);
+    arbol2.position.set(330,0,70);
+    scene.add(arbol2);
+
+    var arbol3 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol3.scale.set(1,1,1);
+    arbol3.position.set(-300,0,170);
+    scene.add(arbol3);
+
+    var arbol4 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol4.scale.set(1,1,1);
+    arbol4.position.set(-330,0,70);
+    scene.add(arbol4);
+
+    var arbol5 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol5.scale.set(1,1,1);
+    arbol5.position.set(300,0,-170);
+    scene.add(arbol5);
+
+    var arbol6 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol6.scale.set(1,1,1);
+    arbol6.position.set(300,0,-60);
+    scene.add(arbol6);
+
+    var arbol7 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol7.scale.set(1,1,1);
+    arbol7.position.set(-300,0,-170);
+    scene.add(arbol7);
+
+    var arbol8 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol8.scale.set(1,1,1);
+    arbol8.position.set(-270,0,-50);
+    scene.add(arbol8);
+
+    var arbol9 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol9.scale.set(1,1,1);
+    arbol9.position.set(270,0,300);
+    scene.add(arbol9);
+
+    var arbol10 = Obj2 ({x: 0, y: 0, z: 0});
+    arbol10.scale.set(1,1,1);
+    arbol10.position.set(-270,0,300);
+    scene.add(arbol10);
+
+    //Postes
+    var poste1 = Obj11({x: 0, y: 0, z: 0});
+    poste1.scale.set(1,1,1);
+    poste1.position.set(205,0,180);
+    scene.add(poste1);
+
+    var poste2 = Obj11({x: 0, y: 0, z: 0});
+    poste2.scale.set(1,1,1);
+    poste2.position.set(205,0,90);
+    scene.add(poste2);
+
+    var poste3 = Obj11({x: 0, y: 0, z: 0});
+    poste3.scale.set(1,1,1);
+    poste3.position.set(-205,0,180);
+    scene.add(poste3);
+
+    var poste4 = Obj11({x: 0, y: 0, z: 0});
+    poste4.scale.set(1,1,1);
+    poste4.position.set(-205,0,90);
+    scene.add(poste4);
+
+    var poste5 = Obj11({x: 0, y: 0, z: 0});
+    poste5.scale.set(1,1,1);
+    poste5.position.set(-205,0,260);
+    scene.add(poste5);
+
+    var poste6 = Obj11({x: 0, y: 0, z: 0});
+    poste6.scale.set(1,1,1);
+    poste6.position.set(205,0,260);
+    scene.add(poste6);
+
+    //hombre de nieve
+    var hniev= Obj7 ({x: 0, y: 0, z: 0});
+    hniev.scale.set(1.5,1.5,1.5);
+    hniev.position.set(-70,0,290);
+    scene.add(hniev);
+
+    var hniev1= Obj7 ({x: 0, y: 0, z: 0});
+    hniev1.scale.set(1.5,1.5,1.5);
+    hniev1.position.set(180,0,-50);
+    scene.add(hniev1)
+
+    //Hombre de galleta
+    var hga = Obj6 ({x: 0, y: 0, z: 0});
+    hga.scale.set(2,2,2);
+    hga.position.set(80,60,100);
+    hga.rotation.set(0,-0.785,0);
+    scene.add(hga);
+
+    //caramelos
+    var ca1 = Obj8 ({x: 0, y: 0, z: 0});
+    ca1.scale.set(2,2,2);
+    ca1.position.set (125, 30, -310);
+    scene.add(ca1);
+
+    var ca2 = Obj8 ({x: 0, y: 0, z: 0});
+    ca2.scale.set(2,2,2);
+    ca2.position.set (-260, 30, 0);
+    scene.add(ca2);
+
+    var ca3 = Obj8 ({x: 0, y: 0, z: 0});
+    ca3.scale.set(2,2,2);
+    ca3.position.set (105, 30, 265);
+    scene.add(ca3);
+
+    var ca4 = Obj8 ({x: 0, y: 0, z: 0});
+    ca4.scale.set(2,2,2);
+    ca4.position.set (-340, 30, 220);
+    scene.add(ca4);
+
+    var ca5 = Obj8 ({x: 0, y: 0, z: 0});
+    ca5.scale.set(2,2,2);
+    ca5.position.set (180, 30, -95);
+    scene.add(ca5);
+
+    var ca6 = Obj8 ({x: 0, y: 0, z: 0});
+    ca6.scale.set(2,2,2);
+    ca6.position.set (-145, 30, 360);
+    scene.add(ca6);
+
+    //Regalos
+    var reg1 = Obj9({x: 0, y: 0, z: 0});
+    reg1.scale.set(2,2,2);
+    reg1.position.set(-160,10,-100);
+    scene.add(reg1);
+
+    var reg2 = Obj9({x: 0, y: 0, z: 0});
+    reg2.scale.set(2,2,2);
+    reg2.position.set(-185,10,-100);
+    scene.add(reg2);
+
+    var reg3 = Obj9({x: 0, y: 0, z: 0});
+    reg3.scale.set(2,2,2);
+    reg3.position.set(-210,10,-100);
+    scene.add(reg3);
+
+    var reg4 = Obj9({x: 0, y: 0, z: 0});
+    reg4.scale.set(2,2,2);
+    reg4.position.set(-160,10,-130);
+    scene.add(reg4);
+
+    var reg5 = Obj9({x: 0, y: 0, z: 0});
+    reg5.scale.set(2,2,2);
+    reg5.position.set(-185,10,-130);
+    scene.add(reg5);
+
+    var reg6 = Obj9({x: 0, y: 0, z: 0});
+    reg6.scale.set(2,2,2);
+    reg6.position.set(-210,10,-130);
+    scene.add(reg6);
+
+    var reg7 = Obj9({x: 0, y: 0, z: 0});
+    reg7.scale.set(2,2,2);
+    reg7.position.set(-160,10,-160);
+    scene.add(reg7);
+
+    var reg8 = Obj9({x: 0, y: 0, z: 0});
+    reg8.scale.set(2,2,2);
+    reg8.position.set(-185,10,-160);
+    scene.add(reg8);
+
+    var reg9 = Obj9({x: 0, y: 0, z: 0});
+    reg9.scale.set(2,2,2);
+    reg9.position.set(-210,10,-160);
+    scene.add(reg9);
+
+    var reg10 = Obj9({x: 0, y: 0, z: 0});
+    reg10.scale.set(2,2,2);
+    reg10.position.set(-195,40,-140);
+    scene.add(reg10);
+
+    var reg11 = Obj9({x: 0, y: 0, z: 0});
+    reg11.scale.set(2,2,2);
+    reg11.position.set(-170,40,-140);
+    scene.add(reg11);
+
+    var reg12 = Obj9({x: 0, y: 0, z: 0});
+    reg12.scale.set(2,2,2);
+    reg12.position.set(-195,40,-110);
+    scene.add(reg12);
+
+    var reg13 = Obj9({x: 0, y: 0, z: 0});
+    reg13.scale.set(2,2,2);
+    reg13.position.set(-170,40,-110);
+    scene.add(reg13);
+
+    var reg14 = Obj9({x: 0, y: 0, z: 0});
+    reg14.scale.set(2,2,2);
+    reg14.position.set(-180,70,-120);
+    scene.add(reg14);
+
+    // Silla
+    var silla1 = Obj10 ({x: 0, y: 0, z: 0});
+    silla1.scale.set(1.5,1.5,1.5);
+    silla1.position.set(120,25,-170);
+    silla1.rotation.set(0,-0.785,0);
+    scene.add(silla1);
+
+    //Estrellas
+    var estrella1 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella1.scale.set(4.5,4.5,4.5);
+    estrella1.position.set(0,250,0);
+    scene.add(estrella1);
+
+    var estrella2 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella2.scale.set(4.5,4.5,4.5);
+    estrella2.position.set(145, 238, -72);
+    scene.add(estrella2);
+
+    var estrella3 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella3.scale.set(4.5,4.5,4.5);
+    estrella3.position.set(-310, 267, 301);
+    scene.add(estrella3);
+
+    var estrella4 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella4.scale.set(4.5,4.5,4.5);
+    estrella4.position.set(-398, 259, 120);
+    scene.add(estrella4);
+
+    var estrella5 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella5.scale.set(4.5,4.5,4.5);
+    estrella5.position.set(299, 241, 305);
+    scene.add(estrella5);
+
+    var estrella6 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella6.scale.set(4.5,4.5,4.5);
+    estrella6.position.set(-128, 270, -344);
+    scene.add(estrella6);
+
+    var estrella7 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella7.scale.set(4.5,4.5,4.5);
+    estrella7.position.set(410, 233, 89);
+    scene.add(estrella7);
+
+    var estrella8 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella8.scale.set(4.5,4.5,4.5);
+    estrella8.position.set(75, 263, -415);
+    scene.add(estrella8);
+
+    var estrella9 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella9.scale.set(4.5,4.5,4.5);
+    estrella9.position.set(-255, 248, 179);
+    scene.add(estrella9);
+
+    var estrella10 = Obj5 ({x: 0, y: 0, z: 0});
+    estrella10.scale.set(4.5,4.5,4.5);
+    estrella10.position.set(364, 237, -52);
+    scene.add(estrella10);
+
+    var estrella11= Obj5 ({x: 0, y: 0, z: 0});
+    estrella11.scale.set(4.5,4.5,4.5);
+    estrella11.position.set(-99, 269, 320);
+    scene.add(estrella11);
+
+    var estrella12= Obj5 ({x: 0, y: 0, z: 0});
+    estrella12.scale.set(4.5,4.5,4.5);
+    estrella12.position.set(280, 232, -287);
+    scene.add(estrella12);
+
+    var estrella13= Obj5 ({x: 0, y: 0, z: 0});
+    estrella13.scale.set(4.5,4.5,4.5);
+    estrella13.position.set(-220, 236, 140);
+    scene.add(estrella13);
+
+    var estrella14= Obj5 ({x: 0, y: 0, z: 0});
+    estrella14.scale.set(4.5,4.5,4.5);
+    estrella14.position.set(180, 268, -310);
+    scene.add(estrella14);
+
+    var estrella15= Obj5 ({x: 0, y: 0, z: 0});
+    estrella15.scale.set(4.5,4.5,4.5);
+    estrella15.position.set(395, 232, -120);
+    scene.add(estrella15);
+
+    var estrella16= Obj5 ({x: 0, y: 0, z: 0});
+    estrella16.scale.set(4.5,4.5,4.5);
+    estrella16.position.set(-45, 243, 260);
+    scene.add(estrella16);
+
+    var estrella17= Obj5 ({x: 0, y: 0, z: 0});
+    estrella17.scale.set(4.5,4.5,4.5);
+    estrella17.position.set(-333, 270, 75);
+    scene.add(estrella17);
+
+    var estrella18= Obj5 ({x: 0, y: 0, z: 0});
+    estrella18.scale.set(4.5,4.5,4.5);
+    estrella18.position.set(120, 254, -390);
+    scene.add(estrella18);
+
+    var estrella19= Obj5 ({x: 0, y: 0, z: 0});
+    estrella19.scale.set(4.5,4.5,4.5);
+    estrella19.position.set(260, 247, 190);
+    scene.add(estrella19);
+
+    var estrella20= Obj5 ({x: 0, y: 0, z: 0});
+    estrella20.scale.set(4.5,4.5,4.5);
+    estrella20.position.set(-410, 238, -205);
+    scene.add(estrella20);
+
+    //copo de nieve
+
+    var copo1 = Obj13({x:-320,y:260,z:150}); 
+    copo1.scale.set(2,2,2); 
+    copo1.position.set(-320,260,150); 
+    scene.add(copo1);
+
+    var copo2 = Obj13({x:180,y:240,z:-90}); 
+    copo2.scale.set(2,2,2); 
+    copo2.position.set(180,240,-90); 
+    scene.add(copo2);
+
+    var copo3 = Obj13({x:-40,y:280,z:300}); 
+    copo3.scale.set(2,2,2); 
+    copo3.position.set(-40,280,300);
+    scene.add(copo3);
+
+    var copo4 = Obj13({x:220,y:210,z:-180}); 
+    copo4.scale.set(2,2,2); 
+    copo4.position.set(220,210,-180); 
+    scene.add(copo4);
+
+    var copo5 = Obj13({x:-150,y:270,z:20}); 
+    copo5.scale.set(2,2,2); 
+    copo5.position.set(-150,270,20); 
+    scene.add(copo5);
+
+    var copo6 = Obj13({x:-260,y:230,z:340}); 
+    copo6.scale.set(2,2,2); 
+    copo6.position.set(-260,230,340); 
+    scene.add(copo6);
+
+    var copo7 = Obj13({x:120,y:250,z:-320}); 
+    copo7.scale.set(2,2,2); 
+    copo7.position.set(120,250,-320); 
+    scene.add(copo7);
+
+    var copo8 = Obj13({x:-380,y:200,z:100}); 
+    copo8.scale.set(2,2,2); 
+    copo8.position.set(-380,200,100); 
+    scene.add(copo8);
+
+    var copo9 = Obj13({x:250,y:260,z:220}); 
+    copo9.scale.set(2,2,2); 
+    copo9.position.set(250,260,220); 
+    scene.add(copo9);
+
+    var copo10 = Obj13({x:-90,y:180,z:-250}); 
+    copo10.scale.set(2,2,2); 
+    copo10.position.set(-90,180,-250); 
+    scene.add(copo10);
+
+    var copo11 = Obj13({x:310,y:220,z:140}); 
+    copo11.scale.set(2,2,2); 
+    copo11.position.set(310,220,140); 
+    scene.add(copo11);
+
+    var copo12 = Obj13({x:-200,y:260,z:-60}); 
+    copo12.scale.set(2,2,2); 
+    copo12.position.set(-200,260,-60); 
+    scene.add(copo12);
+
+    var copo13 = Obj13({x:90,y:240,z:330}); 
+    copo13.scale.set(2,2,2); 
+    copo13.position.set(90,240,330); 
+    scene.add(copo13);
+
+    var copo14 = Obj13({x:-330,y:210,z:-310}); 
+    copo14.scale.set(2,2,2); 
+    copo14.position.set(-330,210,-310); 
+    scene.add(copo14);
+
+    var copo15 = Obj13({x:170,y:270,z:50}); 
+    copo15.scale.set(2,2,2); 
+    copo15.position.set(170,270,50); 
+    scene.add(copo15);
+
+    var copo16 = Obj13({x:-110,y:230,z:280}); 
+    copo16.scale.set(2,2,2); 
+    copo16.position.set(-110,230,280); 
+    scene.add(copo16);
+
+    var copo17 = Obj13({x:200,y:260,z:-200}); 
+    copo17.scale.set(2,2,2); 
+    copo17.position.set(200,260,-200); 
+    scene.add(copo17);
+
+    var copo18 = Obj13({x:-280,y:220,z:-120}); 
+    copo18.scale.set(2,2,2); 
+    copo18.position.set(-280,220,-120); 
+    scene.add(copo18);
+
+    var copo19 = Obj13({x:320,y:250,z:310}); 
+    copo19.scale.set(2,2,2); 
+    copo19.position.set(320,250,310); 
+    scene.add(copo19);
+
+    var copo20 = Obj13({x:-30,y:200,z:-350}); 
+    copo20.scale.set(2,2,2); 
+    copo20.position.set(-30,200,-350); 
+    scene.add(copo20);
+
+    var copo21 = Obj13({x:60,y:260,z:90}); 
+    copo21.scale.set(2,2,2); 
+    copo21.position.set(60,260,90); 
+    scene.add(copo21);
+
+    var copo22 = Obj13({x:-360,y:240,z:-160}); 
+    copo22.scale.set(2,2,2); 
+    copo22.position.set(-360,240,-160); 
+    scene.add(copo22);
+
+    var copo23 = Obj13({x:140,y:230,z:260}); 
+    copo23.scale.set(2,2,2); 
+    copo23.position.set(140,230,260); 
+    scene.add(copo23);
+
+    var copo24 = Obj13({x:-250,y:250,z:10}); 
+    copo24.scale.set(2,2,2); 
+    copo24.position.set(-250,250,10); 
+    scene.add(copo24);
+
+    var copo25 = Obj13({x:350,y:270,z:-140}); 
+    copo25.scale.set(2,2,2); 
+    copo25.position.set(350,270,-140); 
+    scene.add(copo25);
+
+    var copo26 = Obj13({x:-100,y:190,z:200}); 
+    copo26.scale.set(2,2,2); 
+    copo26.position.set(-100,190,200); 
+    scene.add(copo26);
+
+    var copo27 = Obj13({x:300,y:260,z:-300}); 
+    copo27.scale.set(2,2,2); 
+    copo27.position.set(300,260,-300); 
+    scene.add(copo27);
+
+    var copo28 = Obj13({x:-200,y:210,z:330}); 
+    copo28.scale.set(2,2,2); 
+    copo28.position.set(-200,210,330); 
+    scene.add(copo28);
+
+    var copo29 = Obj13({x:40,y:250,z:-40}); 
+    copo29.scale.set(2,2,2); 
+    copo29.position.set(40,250,-40); 
+    scene.add(copo29);
+
+    var copo30 = Obj13({x:-350,y:220,z:290}); 
+    copo30.scale.set(2,2,2); 
+    copo30.position.set(-350,220,290); 
+    scene.add(copo30);
+
+    var copo31 = Obj13({x:110,y:260,z:-260}); 
+    copo31.scale.set(2,2,2); 
+    copo31.position.set(110,260,-260); 
+    scene.add(copo31);
+
+    var copo32 = Obj13({x:-160,y:240,z:160}); 
+    copo32.scale.set(2,2,2); 
+    copo32.position.set(-160,240,160); 
+    scene.add(copo32);
+
+    var copo33 = Obj13({x:280,y:210,z:40}); 
+    copo33.scale.set(2,2,2); 
+    copo33.position.set(280,210,40); 
+    scene.add(copo33);
+
+    var copo34 = Obj13({x:-100,y:260,z:-310}); 
+    copo34.scale.set(2,2,2); 
+    copo34.position.set(-100,260,-310); 
+    scene.add(copo34);
+
+    var copo35 = Obj13({x:200,y:220,z:120}); 
+    copo35.scale.set(2,2,2); 
+    copo35.position.set(200,220,120); 
+    scene.add(copo35);
+
+    var copo36 = Obj13({x:-50,y:270,z:-100}); 
+    copo36.scale.set(2,2,2); 
+    copo36.position.set(-50,270,-100); 
+    scene.add(copo36);
+
+    var copo37 = Obj13({x:330,y:230,z:200}); 
+    copo37.scale.set(2,2,2); 
+    copo37.position.set(330,230,200); 
+    scene.add(copo37);
+
+    var copo38 = Obj13({x:-270,y:240,z:-200}); 
+    copo38.scale.set(2,2,2); 
+    copo38.position.set(-270,240,-200); 
+    scene.add(copo38);
+
+    var copo39 = Obj13({x:100,y:260,z:350}); 
+    copo39.scale.set(2,2,2); 
+    copo39.position.set(100,260,350); 
+    scene.add(copo39);
+
+    var copo40 = Obj13({x:-300,y:210,z:60}); 
+    copo40.scale.set(2,2,2); 
+    copo40.position.set(-300,210,60); 
+    scene.add(copo40);
+
+    var copo41 = Obj13({x:200,y:270,z:-20}); 
+    copo41.scale.set(2,2,2); 
+    copo41.position.set(200,270,-20); 
+    scene.add(copo41);
+
+    var copo42 = Obj13({x:-120,y:230,z:350}); 
+    copo42.scale.set(2,2,2); 
+    copo42.position.set(-120,230,350); 
+    scene.add(copo42);
+    var copo43 = Obj13({x:250,y:260,z:-250}); 
+    copo43.scale.set(2,2,2); 
+    copo43.position.set(250,260,-250); 
+    scene.add(copo43);
+    
+    var copo44 = Obj13({x:-360,y:200,z:240}); 
+    copo44.scale.set(2,2,2); 
+    copo44.position.set(-360,200,240); 
+    scene.add(copo44);
+
+    var copo45 = Obj13({x:30,y:250,z:-330}); 
+    copo45.scale.set(2,2,2); 
+    copo45.position.set(30,250,-330); 
+    scene.add(copo45);
+
+    var copo46 = Obj13({x:160,y:270,z:180}); 
+    copo46.scale.set(2,2,2); 
+    copo46.position.set(160,270,180); 
+    scene.add(copo46);
+    
+    var copo47 = Obj13({x:-200,y:240,z:-20}); 
+    copo47.scale.set(2,2,2); 
+    copo47.position.set(-200,240,-20); 
+    scene.add(copo47);
+    
+    var copo48 = Obj13({x:300,y:220,z:-150}); 
+    copo48.scale.set(2,2,2); 
+    copo48.position.set(300,220,-150); 
+    scene.add(copo48);
+
+    var copo49 = Obj13({x:-280,y:270,z:310}); 
+    copo49.scale.set(2,2,2); 
+    copo49.position.set(-280,270,310);
+     scene.add(copo49);
+     
+    var copo50 = Obj13({x:40,y:260,z:20}); 
+    copo50.scale.set(2,2,2); 
+    copo50.position.set(40,260,20); 
+    scene.add(copo50);
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>

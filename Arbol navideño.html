@@ -1,0 +1,360 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <title>Práctica 01</title>
+</head>
+<body>
+    
+<canvas id="myCanvas">
+    <!--El elemento HTML canvas se puede utilizar para dibujar gráficos a través de 
+        secuencias de comandos (por lo general JavaScript ).-->
+</canvas>
+
+<!-- Aquí va todo el código de three.js -->
+<!-- script type="importmap" importa las librerías necesarias para three.js-->
+<script type="importmap"> 
+    {
+        "imports":{
+            "three": "./js/three.module.js",
+            "three/OrbitControls": "./js/OrbitControls.js" 
+        }
+}
+</script>
+<script type="module"> 
+//🗃️🗃️ Mandar llamar a la librería
+    import * as THREE from 'three'; 
+    import {OrbitControls} from 'three/OrbitControls';
+    console.log(OrbitControls);
+
+//🕹️🕹️ Renderer - Realiza una conexión entre el código y el canvas
+    var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('myCanvas'), antialias: true,
+    });
+    renderer.setPixelRatio(window.decivePixelRatio);
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x70707C);
+
+
+// 🎬 Creando nueva escena - Es el espacio donde se colocan los objetos
+    var scene = new THREE.Scene();
+
+//🎥🎥 Agregar una cámara de perspectiva
+    var camera = new THREE.PerspectiveCamera(70,window.innerWidth / window.innerHeight,0.1,2000
+      );
+    scene.add(camera);
+
+    //Settings de la cámara
+    camera.position.set(0, 50, 150);
+    // Luz direccional
+    var light = new THREE.DirectionalLight(0xFFFFFF, 1);
+    light.castShadow = true;
+    light.position.set(20, 30, 20); 
+    light.target.position.set(0, 0, 0);
+    scene.add(light.target);
+    scene.add(light);
+    renderer.shadowMap.enabled = true;
+
+
+    // Cámara de sombras
+    light.shadow.camera.top = 30;     
+    light.shadow.camera.bottom = -30;
+    light.shadow.camera.left = -30;
+    light.shadow.camera.right = 30;
+    light.shadow.camera.visible = true;
+    light.shadow.mapSize.width = 1024;
+    light.shadow.mapSize.height = 1024;
+
+
+    // Añadiendo los OrbitControls
+    var controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+// Espacio para colocar los objetos
+    var pisoGeometry = new THREE.PlaneGeometry(200, 200);
+    var pisoMaterial = new THREE.MeshLambertMaterial({ color: 0xffffff });
+    var piso = new THREE.Mesh(pisoGeometry, pisoMaterial);
+    piso.rotation.x = -Math.PI / 2;
+    piso.position.y = -1;
+    scene.add(piso);
+
+
+    //Arbol
+    var g1 = new THREE.ConeGeometry(5, 60, 50);
+    var m1 = new THREE.MeshLambertMaterial({ color: 0x6E3D17});
+    var mesh01 = new THREE.Mesh(g1, m1);
+    mesh01.position.set(0,30,0);
+    scene.add(mesh01);
+
+    var g2 = new THREE.ConeGeometry(25, 25, 50);
+    var m2 = new THREE.MeshLambertMaterial({ color: 0x056300});
+    var mesh02 = new THREE.Mesh(g2, m2);
+    mesh02.position.set(0,30,0);
+    scene.add(mesh02);
+
+    var g3 = new THREE.ConeGeometry(20, 20, 50);
+    var m3 = new THREE.MeshLambertMaterial({ color: 0x056300});
+    var mesh03 = new THREE.Mesh(g3, m3);
+    mesh03.position.set(0,40,0);
+    scene.add(mesh03);
+
+    var g4 = new THREE.ConeGeometry(15, 20, 50);
+    var m4 = new THREE.MeshLambertMaterial({ color: 0x056300});
+    var mesh04 = new THREE.Mesh(g4, m4);
+    mesh04.position.set(0,50,0);
+    scene.add(mesh04);
+
+    var g5 = new THREE.ConeGeometry(10, 20, 50);
+    var m5 = new THREE.MeshLambertMaterial({ color: 0x056300});
+    var mesh05 = new THREE.Mesh(g5, m5);
+    mesh05.position.set(0,60,0);
+    scene.add(mesh05);
+
+    var g6 = new THREE.ConeGeometry(5, 12, 50);
+    var m6 = new THREE.MeshLambertMaterial({ color: 0x056300});
+    var mesh06 = new THREE.Mesh(g6, m6);
+    mesh06.position.set(0,68,0);
+    scene.add(mesh06);
+
+    var esferaGroup = new THREE.Group();
+
+    // Esfera principal (bola)
+    var esferaGeometry = new THREE.SphereGeometry(0.6, 32, 32);
+    var esferaMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 }); // roja
+    var esfera = new THREE.Mesh(esferaGeometry, esferaMaterial);
+    esferaGroup.add(esfera);
+
+        // Sujetador dorado
+    var tapaGeometry = new THREE.CylinderGeometry(0.15, 0.15, 0.2, 32);
+    var tapaMaterial = new THREE.MeshLambertMaterial({ color: 0xffd700 }); // dorado
+    var tapa = new THREE.Mesh(tapaGeometry, tapaMaterial);
+    tapa.position.y = 0.7;
+    esferaGroup.add(tapa);
+
+    esferaGroup.position.set(-40, 3, 0);
+    esferaGroup.scale.set(5,5,5);
+    //scene.add(esferaGroup);
+
+    // Esfera 1
+var esfera2 = esferaGroup.clone();
+esfera2.position.set(0, 13, 22);
+scene.add(esfera2);
+
+// Esfera 2
+var esfera3 = esferaGroup.clone();
+esfera3.position.set(0, 13, -22);
+scene.add(esfera3);
+
+// Esfera 3
+var esfera4 = esferaGroup.clone();
+esfera4.position.set(22, 13, 0);
+scene.add(esfera4);
+
+// Esfera 4
+var esfera5 = esferaGroup.clone();
+esfera5.position.set(-22, 13, 0);
+scene.add(esfera5);
+
+// Esfera 5
+var esfera6 = esferaGroup.clone();
+esfera6.position.set(15, 13, 17);
+scene.add(esfera6);
+
+// Esfera 6
+var esfera7 = esferaGroup.clone();
+esfera7.position.set(-15, 13, 17);
+scene.add(esfera7);
+
+// Esfera 7
+var esfera8 = esferaGroup.clone();
+esfera8.position.set(-15, 13, -17);
+scene.add(esfera8);
+
+// Esfera 8
+var esfera9 = esferaGroup.clone();
+esfera9.position.set(15, 13, -17);
+scene.add(esfera9);
+
+// Esfera 9
+var esfera10 = esferaGroup.clone();
+esfera10.position.set(0, 26, 18);
+scene.add(esfera10);
+
+// Esfera 10
+var esfera11 = esferaGroup.clone();
+esfera11.position.set(0, 26, -18);
+scene.add(esfera11);
+
+// Esfera 11
+var esfera12 = esferaGroup.clone();
+esfera12.position.set(18, 26, 0);
+scene.add(esfera12);
+
+// Esfera 12
+var esfera13 = esferaGroup.clone();
+esfera13.position.set(-18, 26, 0);
+scene.add(esfera13);
+
+// Esfera 13
+var esfera14 = esferaGroup.clone();
+esfera14.position.set(13, 26, 15);
+scene.add(esfera14);
+
+// Esfera 14
+var esfera15 = esferaGroup.clone();
+esfera15.position.set(-13, 26, 15);
+scene.add(esfera15);
+
+// Esfera 15
+var esfera16 = esferaGroup.clone();
+esfera16.position.set(-13, 26, -15);
+scene.add(esfera16);
+
+// Esfera 16
+var esfera17 = esferaGroup.clone();
+esfera17.position.set(13, 26, -15);
+scene.add(esfera17);
+
+// Esfera 17
+var esfera18 = esferaGroup.clone();
+esfera18.position.set(0, 36, 14);
+scene.add(esfera18);
+
+// Esfera 18
+var esfera19 = esferaGroup.clone();
+esfera19.position.set(0, 36, -14);
+scene.add(esfera19);
+
+// Esfera 19
+var esfera20 = esferaGroup.clone();
+esfera20.position.set(14, 36, 0);
+scene.add(esfera20);
+
+// Esfera 20
+var esfera21 = esferaGroup.clone();
+esfera21.position.set(-14, 36, 0);
+scene.add(esfera21);
+
+// Esfera 21
+var esfera22 = esferaGroup.clone();
+esfera22.position.set(9, 36, 11);
+scene.add(esfera22);
+
+// Esfera 22
+var esfera23 = esferaGroup.clone();
+esfera23.position.set(-9, 36, 11);
+scene.add(esfera23);
+
+// Esfera 23
+var esfera24 = esferaGroup.clone();
+esfera24.position.set(9, 36, -11);
+scene.add(esfera24);
+
+// Esfera 24
+var esfera25 = esferaGroup.clone();
+esfera25.position.set(-9, 36, -11);
+scene.add(esfera25);
+
+// Esfera 25
+var esfera26 = esferaGroup.clone();
+esfera26.position.set(0, 46, 10);
+scene.add(esfera26);
+
+// Esfera 26
+var esfera27 = esferaGroup.clone();
+esfera27.position.set(0, 46, -10);
+scene.add(esfera27);
+
+// Esfera 27
+var esfera28 = esferaGroup.clone();
+esfera28.position.set(10, 46, 0);
+scene.add(esfera28);
+
+// Esfera 28
+var esfera29 = esferaGroup.clone();
+esfera29.position.set(-10, 46, 0);
+scene.add(esfera29);
+
+// Esfera 29
+var esfera30 = esferaGroup.clone();
+esfera30.position.set(0, 56, 6);
+scene.add(esfera30);
+
+// Esfera 30
+var esfera31 = esferaGroup.clone();
+esfera31.position.set(0, 56, -6);
+scene.add(esfera31);
+
+// Esfera 31
+var esfera32 = esferaGroup.clone();
+esfera32.position.set(6, 56, 0);
+scene.add(esfera32);
+
+// Esfera 32
+var esfera33 = esferaGroup.clone();
+esfera33.position.set(-6, 56, 0);
+scene.add(esfera33);
+
+var g10 = new THREE.ConeGeometry( 1, 4, 50 );
+    var m10 = new THREE.MeshLambertMaterial( {color: 0xFFFF00} );
+    var mesh10 = new THREE.Mesh( g10, m10 );
+    mesh10.position.set(0, 85, 0);
+    mesh10.scale.set(3,3,3);
+    scene.add(mesh10);
+
+    var g11 = new THREE.ConeGeometry( 1, 4, 50 );
+    var m11 = new THREE.MeshLambertMaterial( {color: 0xFFFF00} );
+    var mesh11 = new THREE.Mesh( g11, m11 );
+    mesh11.position.set(-8, 80.5, 0);
+    mesh11.rotation.set(0, 0, 1.17);
+    mesh11.scale.set(3,3,3);
+    scene.add(mesh11);
+
+    var g12 = new THREE.ConeGeometry( 1, 4, 50 );
+    var m12 = new THREE.MeshLambertMaterial( {color: 0xFFFF00} );
+    var mesh12 = new THREE.Mesh( g12, m12 );
+    mesh12.position.set(8, 80.5, 0);
+    mesh12.rotation.set(0, 0, -1.17);
+    mesh12.scale.set(3,3,3);
+    scene.add(mesh12);
+
+    var g13 = new THREE.ConeGeometry( 1, 4, 50 );
+    var m13 = new THREE.MeshLambertMaterial( {color: 0xFFFF00} );
+    var mesh13 = new THREE.Mesh( g13, m13 );
+    mesh13.position.set(-7, 70, 0);
+    mesh13.rotation.set(0, 0, 2.4);
+    mesh13.scale.set(3,3,3);
+    scene.add(mesh13);
+
+    var g14 = new THREE.ConeGeometry( 1, 4, 50 );
+    var m14 = new THREE.MeshLambertMaterial( {color: 0xFFFF00} );
+    var mesh14 = new THREE.Mesh( g14, m14 );
+    mesh14.position.set(7, 70, 0);
+    mesh14.rotation.set(0, 0, -2.4);
+    mesh14.scale.set(3,3,3);
+    scene.add(mesh14);
+
+    var g15 = new THREE.SphereGeometry( 1.2, 4, 500 );
+    var m15 = new THREE.MeshLambertMaterial( {color: 0xFFFF00} );
+    var mesh15 = new THREE.Mesh( g15, m15 );
+    mesh15.position.set(0, 77, 0);
+    mesh15.rotation.set(0, 0, -2.4);
+    mesh15.scale.set(4,4,4);
+    scene.add( mesh15 );
+
+//🎰🎰Rendering y animación
+    requestAnimationFrame(render);
+    function render() {
+
+    //🪄🪄 Animación - 
+
+    //🎮🎮Actualización del OrbitControls para generar la suavidad de movimiento
+    controls.update();
+
+    //Llamado para renderizar y volver a llamar a la misma función (render)
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    }
+</script>
+</body>
+</html>
